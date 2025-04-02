@@ -1,0 +1,23 @@
+{
+  "name": "sqlserver-sink",
+  "config": {
+    "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+    "tasks.max": "1",
+    "connection.url": "jdbc:sqlserver://mssql:1433;databaseName=KafkaDB;encrypt=false;trustServerCertificate=true",
+    "connection.user": "sa",
+    "connection.password": "P@ssW0rdS3cuR3!",
+    "topics": "mssql-source_table",
+    "table.name.format": "target_table",
+    "auto.create": "true",
+    "auto.evolve": "true",
+    "insert.mode": "insert",
+    "pk.fields": "id",
+    "pk.mode": "record_value",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "true",
+    "value.converter.schemas.enable": "true",
+    "errors.tolerance": "all",
+    "errors.log.enable": "true"
+  }
+}

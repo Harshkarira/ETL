@@ -1,0 +1,21 @@
+{
+  "name": "sqlserver-source-1",
+  "config": {
+    "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+    "tasks.max": "1",
+    "connection.url": "jdbc:sqlserver://mssql:1433;databaseName=KafkaDB;encrypt=false;trustServerCertificate=true",
+    "connection.user": "sa",
+    "connection.password": "P@ssW0rdS3cuR3!",
+    "table.whitelist": "source_table",
+    "mode": "incrementing",
+    "incrementing.column.name": "id",
+    "topic.prefix": "mssql-",
+    "poll.interval.ms": "5000",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "true",
+    "value.converter.schemas.enable": "true",
+    "error.tolerance": "all",
+    "errors.log.enable": "true"
+  }
+}
