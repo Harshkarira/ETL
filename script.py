@@ -1,5 +1,6 @@
 import time
 import os
+import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -66,6 +67,37 @@ def download_reliance_data(username, password):
     finally:
         driver.quit()
 
+file_name = 'Reliance Industr.xlsx'
+try:
+    df = pd.read_excel(
+        file_name,
+        sheet_name=0,
+        skiprows=2,
+        nrows=16,
+        usecols='B:K'
+    )
+
+    df.columns = ['Narration', 'Mar-15', 'Mar-16', 'Mar-17', 'Mar-18', 
+                 'Mar-19', 'Mar-20', 'Mar-21', 'Mar-22', 'Mar-23', 'Mar-24']
+    
+    df.dropna(subset=['Narration'])
+
+    for col in df.columns[1:]:  # Skip 'Narration' column
+        df[col] = pd.to_numeric(
+            df[col].astype(str).str.replace(',', '').str.replace('%', ''),
+            errors='coerce'
+        ) / (100 if df.loc[df['Narration'].isin(['Dividend Payout', 'OPM']), col].any() else 1)
+
+    print("First few rows of the DataFrame:")
+    print(df.head())
+    print("\nDataFrame Info:")
+    print(df.info())
+    print("\nShape of DataFrame:", df.shape)
+    
+except FileNotFoundError:
+    print(f"Error: The file '{file_name}' was not found in the current directory")
+except Exception as e:
+    print(f"Error occurred while reading the file: {str(e)}")
 
 def main():
     try:
