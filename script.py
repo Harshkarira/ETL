@@ -1,4 +1,3 @@
-import hvac
 import time
 import os
 from selenium import webdriver
@@ -8,29 +7,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 
 
-def get_vault_cred():
-    try:
-        client = hvac.Client(url="http://localhost:8200", token="root-token")
-        if not client.is_authenticated():
-            raise Exception("Vault authentication failed")
-
-        secret = client.secrets.kv.v2.read_secret_version(
-            path="screener", mount_point="secret"
-        )
-
-        username = secret["data"]["data"]["username"]
-        password = secret["data"]["data"]["password"]
-
-        return username, password
-
-    except Exception as e:
-        print(f"Error fetching vault credentials: {e}")
-        raise
-
-
 def download_reliance_data(username, password):
     try:
-        download_dir = r"C:\Users\Harsh.karira\Desktop\vault"
+        download_dir = "/tmp"
         chrome_options = Options()
         chrome_options.add_experimental_option(
             "prefs",
@@ -40,7 +19,6 @@ def download_reliance_data(username, password):
                 "download.directory_upgrade": True,
             },
         )
-        # chrome_options.add_argument('--headless')
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
 
@@ -91,9 +69,13 @@ def download_reliance_data(username, password):
 
 def main():
     try:
-        username, password = get_vault_cred()
+        username = os.environ["USERNAME"]
+        password = os.environ["PASSWORD"]
         excel_file = download_reliance_data(username, password)
         print(f"Download successful: {excel_file}")
+    except KeyError as e:
+        print(f"Environment variable missing: {e}")
+        raise
     except Exception as e:
         print(f"Script failed: {e}")
         raise

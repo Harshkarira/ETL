@@ -1,0 +1,39 @@
+resources:
+  - name: git-repo
+    type: git
+    source:
+      uri: https://github.com/Harshkarira/ETL.git
+      branch: master
+
+jobs:
+  - name: download-reliance-data
+    plan:
+      - get: git-repo
+        trigger: true
+      - task: run-script
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: python
+              tag: "3.9-slim"
+          inputs:
+            - name: git-repo
+          outputs:
+            - name: downloaded-files
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                apt-get update && apt-get install -y wget unzip
+                wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+                apt-get install -y ./google-chrome-stable_current_amd64.deb
+                pip install selenium webdriver-manager
+                cd git-repo
+                python script.py
+                mv "Reliance Industr.xlsx" ../downloaded-files/
+          params:
+            USERNAME: ((screener.username))
+            PASSWORD: ((screener.password))
