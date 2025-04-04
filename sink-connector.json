@@ -8,7 +8,7 @@
     "connection.password": "P@ssW0rdS3cuR3!",
     "topics": "mssql-source_table",
     "table.name.format": "target_table",
-    "auto.create": "true",
+    "auto.create": "false",
     "auto.evolve": "true",
     "insert.mode": "insert",
     "pk.fields": "id",
