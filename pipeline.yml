@@ -2,8 +2,8 @@ resources:
   - name: git-repo
     type: git
     source:
-      uri: https://github.com/Harshkarira/ETL.git
-      branch: master
+      uri: https://github.com/Harshkarira/ETL
+      branch: main
 
 jobs:
   - name: download-reliance-data

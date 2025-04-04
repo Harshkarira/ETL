@@ -23,7 +23,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - concourse-net
+      - kafka-network
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
 
@@ -111,7 +111,7 @@ services:
       - IPC_LOCK
     command: server -dev
     networks:
-      - concourse-net
+      - kafka-network
 
   concourse:
     image: concourse/concourse:7.9
@@ -136,13 +136,16 @@ services:
       - vault
       - postgres
     networks:
-      - concourse-net
+      - kafka-network
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
 
 networks:
   kafka-network:
     driver: bridge
-  concourse-net:
-    driver: bridge
+  # concourse-net:
+  #   driver: bridge
 
 volumes:
   mssql-data:
