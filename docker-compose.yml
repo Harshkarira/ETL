@@ -132,14 +132,13 @@ services:
       CONCOURSE_VAULT_PATH: "secret"
       CONCOURSE_ADD_LOCAL_USER: "test:test"
       CONCOURSE_MAIN_TEAM_LOCAL_USER: "test"
+      CONCOURSE_WORKER_CONTAINERD_DNS_SERVER: "8.8.8.8"
+      CONCOURSE_WORKER_RUNTIME: "containerd"
     depends_on:
       - vault
       - postgres
     networks:
       - kafka-network
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
 
 networks:
   kafka-network:

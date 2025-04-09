@@ -3,13 +3,43 @@ resources:
     type: git
     source:
       uri: https://github.com/Harshkarira/ETL
-      branch: main
+      branch: master
 
 jobs:
   - name: download-reliance-data
     plan:
       - get: git-repo
         trigger: true
+      - task: fetch-creds
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: python
+              tag: "3.9-slim"
+
+          params:
+            VAULT_ADDR: 'http://vault:8200'
+            VAULT_TOKEN: 'root-token'
+
+          run:
+            path: /bin/sh
+            args:
+              - -c
+              - |
+                export VAULT_ADDR='http://vault:8200'
+                export VAULT_TOKEN='root-token'
+
+                USERNAME=$(vault kv get -field=username secret/screener)
+                PASSWORD=$(vault kv get -field=password secret/screener)
+
+                export VAULT_USERNAME=$USERNAME
+                export VAULT_PASSWORD=$PASSWORD
+
+                echo "Fetched Username: $VAULT_USERNAME"
+                echo "Fetched Password: $VAULT_PASSWORD"
+
       - task: run-script
         config:
           platform: linux
@@ -31,9 +61,11 @@ jobs:
                 wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
                 apt-get install -y ./google-chrome-stable_current_amd64.deb
                 pip install selenium webdriver-manager
+                pip install pandas
+                pip install pyodbc
                 cd git-repo
                 python script.py
                 mv "Reliance Industr.xlsx" ../downloaded-files/
           params:
-            USERNAME: ((screener.username))
-            PASSWORD: ((screener.password))
+            USERNAME: $VAULT_USERNAME
+            PASSWORD: $VAULT_PASSWORD
