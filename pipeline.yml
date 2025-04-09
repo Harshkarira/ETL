@@ -62,7 +62,6 @@ jobs:
                 apt-get install -y ./google-chrome-stable_current_amd64.deb
                 pip install selenium webdriver-manager
                 pip install pandas
-                pip install pyodbc
                 cd git-repo
                 python script.py
                 mv "Reliance Industr.xlsx" ../downloaded-files/
