@@ -8,16 +8,16 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 
 def download_reliance_data(username, password):
-    download_dir = "/tmp"
+    # download_dir = "/tmp"
     chrome_options = Options()
-    chrome_options.add_experimental_option(
-        "prefs",
-        {
-            "download.default_directory": download_dir,
-            "download.prompt_for_download": False,
-            "download.directory_upgrade": True,
-        },
-    )
+    # chrome_options.add_experimental_option(
+    #     "prefs",
+    #     {
+    #         "download.default_directory": download_dir,
+    #         "download.prompt_for_download": False,
+    #         "download.directory_upgrade": True,
+    #     },
+    # )
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
 
@@ -50,7 +50,7 @@ def download_reliance_data(username, password):
     print("Export button clicked")
 
     time.sleep(5)
-    downloaded_file = os.path.join(download_dir, "Reliance Industr.xlsx")
+    downloaded_file = os.path.join("Reliance Industr.xlsx")
     print(f"Excel file downloaded as: {downloaded_file}")
     driver.quit()
     return downloaded_file
